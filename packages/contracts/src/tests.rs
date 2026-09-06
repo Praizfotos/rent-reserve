@@ -41,7 +41,7 @@ impl Setup {
 
         env.ledger().set(LedgerInfo {
             timestamp:                1_700_000_000,
-            protocol_version:         23,  // SDK 28 requires protocol 23+
+            protocol_version:         28,
             sequence_number:          1000,
             network_id:               Default::default(),
             base_reserve:             10,
