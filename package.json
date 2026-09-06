@@ -1,0 +1,17 @@
+{
+  "name": "rentreserve",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*",
+    "rentreserve"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=rentreserve",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces"
+  }
+}
