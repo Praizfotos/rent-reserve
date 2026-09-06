@@ -29,8 +29,40 @@ The project is intentionally designed so that **blockchain infrastructure suppor
 
 ---
 
+# Screenshots
+
+### Landing Page
+![Landing Page Hero](screenshots/01-landing-hero.png)
+
+### Full Landing Page
+![Full Landing Page](screenshots/02-landing-full.png)
+
+### Dashboard — Rent Readiness
+![Dashboard](screenshots/03-dashboard.png)
+
+### Obligations
+![Obligations](screenshots/04-obligations.png)
+
+### Obligation Detail + Contribution Simulator
+![Obligation Detail](screenshots/05-obligation-detail.png)
+
+### Timeline
+![Timeline](screenshots/06-timeline.png)
+
+### Settings — Wallet & Settlement
+![Settings](screenshots/07-settings.png)
+
+### Mobile — Landing Page
+![Mobile Landing](screenshots/08-mobile-landing.png)
+
+### Mobile — Dashboard
+![Mobile Dashboard](screenshots/09-mobile-dashboard.png)
+
+---
+
 # Table of Contents
 
+* [Screenshots](#screenshots)
 * [Product Vision](#product-vision)
 * [The Problem](#the-problem)
 * [The RentReserve Model](#the-rentreserve-model)
