@@ -32,7 +32,15 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="bg-canvas antialiased">{children}</body>
+      <body className="bg-canvas antialiased">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-[14px] focus:font-medium focus:shadow-lg focus:outline-2 focus:outline-offset-2 focus:outline-black/35"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
     </html>
   );
 }
