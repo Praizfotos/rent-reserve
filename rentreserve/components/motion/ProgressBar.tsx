@@ -1,54 +1,61 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface ProgressBarProps {
   percent: number;
   delay?: number;
   duration?: number;
-  className?: string;
-  trackClassName?: string;
-  fillClassName?: string;
   height?: number;
+  className?: string;
+  label?: string;
 }
 
 export default function ProgressBar({
   percent,
   delay = 0.3,
-  duration = 1.0,
-  className = "",
-  trackClassName = "",
-  fillClassName = "",
+  duration,
   height = 6,
+  className,
+  label,
 }: ProgressBarProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.5 });
+  const prefersReduced = useReducedMotion();
+  const resolvedDuration = prefersReduced ? 0 : (duration ?? 1.0);
 
   return (
-    <div
-      ref={ref}
-      className={`relative overflow-hidden rounded-full ${className}`}
-      style={{
-        height,
-        backgroundColor: "rgba(0,0,0,0.06)",
-      }}
-      role="progressbar"
-      aria-valuenow={percent}
-      aria-valuemin={0}
-      aria-valuemax={100}
+    <motion.div
+      className={className}
+      style={{ height }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, amount: 0.5 }}
+      transition={{ delay, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div
-        className={`absolute inset-y-0 left-0 rounded-full ${fillClassName}`}
-        style={{ backgroundColor: "rgba(0,0,0,0.875)", transformOrigin: "left" }}
-        initial={{ scaleX: 0 }}
-        animate={inView ? { scaleX: percent / 100 } : { scaleX: 0 }}
-        transition={{
-          duration,
-          delay,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      />
-    </div>
+      <div
+        role="progressbar"
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label || `${percent}% complete`}
+        className="relative h-full w-full overflow-hidden"
+        style={{ borderRadius: 9999 }}
+      >
+        <motion.div
+          className="absolute inset-0 origin-left"
+          style={{
+            background: "rgba(0, 143, 74, 0.81)",
+            borderRadius: 9999,
+          }}
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: percent / 100 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{
+            delay,
+            duration: resolvedDuration,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        />
+      </div>
+    </motion.div>
   );
 }

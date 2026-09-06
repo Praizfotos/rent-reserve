@@ -1,41 +1,46 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ReactNode } from "react";
 
 interface BlurRevealProps {
   children: ReactNode;
   delay?: number;
   duration?: number;
   y?: number;
-  className?: string;
+  blur?: number;
   once?: boolean;
   amount?: number;
+  className?: string;
 }
 
 export default function BlurReveal({
   children,
   delay = 0,
-  duration = 0.65,
-  y = 20,
-  className = "",
+  duration,
+  y,
+  blur,
   once = true,
   amount = 0.15,
+  className,
 }: BlurRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once, amount });
+  const prefersReduced = useReducedMotion();
+
+  const resolvedDuration = prefersReduced ? 0 : (duration ?? 0.65);
+  const resolvedY = prefersReduced ? 0 : (y ?? 20);
+  const resolvedBlur = prefersReduced ? 0 : (blur ?? 8);
 
   return (
     <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, filter: "blur(8px)", y }}
-      animate={inView ? { opacity: 1, filter: "blur(0px)", y: 0 } : {}}
+      initial={{ opacity: 0, y: resolvedY, filter: `blur(${resolvedBlur}px)` }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once, amount }}
       transition={{
-        duration,
+        duration: resolvedDuration,
         delay,
         ease: [0.22, 1, 0.36, 1],
       }}
+      className={className}
     >
       {children}
     </motion.div>

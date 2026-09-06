@@ -1,59 +1,45 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { useRef } from "react";
 
 interface DrawPathProps {
   d: string;
-  stroke?: string;
+  className?: string;
   strokeWidth?: number;
+  stroke?: string;
   delay?: number;
   duration?: number;
-  className?: string;
-  viewBox?: string;
-  width?: number | string;
-  height?: number | string;
-  fill?: string;
 }
 
 export default function DrawPath({
   d,
-  stroke = "rgba(0,0,0,0.875)",
+  className,
   strokeWidth = 1.5,
+  stroke = "rgba(0,0,0,0.12)",
   delay = 0,
-  duration = 0.8,
-  className = "",
-  viewBox = "0 0 100 100",
-  width = "100%",
-  height = "100%",
-  fill = "none",
+  duration,
 }: DrawPathProps) {
-  const ref = useRef<SVGSVGElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.3 });
+  const prefersReduced = useReducedMotion();
+  const ref = useRef<SVGPathElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const resolvedDuration = prefersReduced ? 0 : (duration ?? 0.8);
 
   return (
-    <svg
+    <motion.path
       ref={ref}
-      viewBox={viewBox}
-      width={width}
-      height={height}
+      d={d}
+      fill="none"
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      initial={{ pathLength: 0, opacity: 0 }}
+      animate={isInView ? { pathLength: 1, opacity: 1 } : {}}
+      transition={{
+        pathLength: { delay, duration: resolvedDuration, ease: [0.22, 1, 0.36, 1] },
+        opacity: { delay, duration: 0.2 },
+      }}
       className={className}
-      aria-hidden="true"
-    >
-      <motion.path
-        d={d}
-        stroke={stroke}
-        strokeWidth={strokeWidth}
-        fill={fill}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        initial={{ pathLength: 0, opacity: 0 }}
-        animate={inView ? { pathLength: 1, opacity: 1 } : {}}
-        transition={{
-          pathLength: { duration, delay, ease: [0.22, 1, 0.36, 1] },
-          opacity: { duration: 0.2, delay },
-        }}
-      />
-    </svg>
+    />
   );
 }

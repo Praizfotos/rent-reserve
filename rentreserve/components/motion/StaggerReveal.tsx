@@ -1,54 +1,70 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ReactNode } from "react";
 
 interface StaggerRevealProps {
-  children: ReactNode[];
+  children: ReactNode;
   stagger?: number;
   delay?: number;
   duration?: number;
   y?: number;
-  className?: string;
-  itemClassName?: string;
+  blur?: number;
   once?: boolean;
   amount?: number;
   as?: "div" | "ul" | "ol";
+  className?: string;
 }
 
 export default function StaggerReveal({
   children,
   stagger = 0.08,
   delay = 0,
-  duration = 0.6,
-  y = 18,
-  className = "",
-  itemClassName = "",
+  duration,
+  y,
+  blur,
   once = true,
   amount = 0.15,
-  as: Tag = "div",
+  as = "div",
+  className,
 }: StaggerRevealProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref as React.RefObject<Element>, { once, amount });
+  const prefersReduced = useReducedMotion();
+  const Tag = motion[as] as React.ComponentType<React.HTMLAttributes<HTMLElement> & Record<string, unknown>>;
+
+  const resolvedDuration = prefersReduced ? 0 : (duration ?? 0.6);
+  const resolvedY = prefersReduced ? 0 : (y ?? 16);
+  const resolvedBlur = prefersReduced ? 0 : (blur ?? 6);
+  const resolvedStagger = prefersReduced ? 0 : stagger;
 
   return (
-    // @ts-expect-error polymorphic ref
-    <Tag ref={ref} className={className}>
-      {(children as ReactNode[]).map((child, i) => (
-        <motion.div
-          key={i}
-          className={itemClassName}
-          initial={{ opacity: 0, filter: "blur(6px)", y }}
-          animate={inView ? { opacity: 1, filter: "blur(0px)", y: 0 } : {}}
-          transition={{
-            duration,
-            delay: delay + i * stagger,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        >
-          {child}
-        </motion.div>
-      ))}
+    <Tag
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once, amount }}
+      variants={{
+        hidden: {},
+        visible: { transition: { staggerChildren: resolvedStagger, delayChildren: delay } },
+      }}
+      className={className}
+    >
+      {Array.isArray(children)
+        ? children.map((child, i) => (
+            <motion.div
+              key={i}
+              variants={{
+                hidden: { opacity: 0, y: resolvedY, filter: `blur(${resolvedBlur}px)` },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  filter: "blur(0px)",
+                  transition: { duration: resolvedDuration, ease: [0.22, 1, 0.36, 1] },
+                },
+              }}
+            >
+              {child}
+            </motion.div>
+          ))
+        : children}
     </Tag>
   );
 }

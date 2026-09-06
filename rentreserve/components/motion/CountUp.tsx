@@ -1,66 +1,74 @@
 "use client";
 
+import { useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { useInView } from "framer-motion";
 
 interface CountUpProps {
-  from?: number;
+  from: number;
   to: number;
   duration?: number;
   delay?: number;
+  decimals?: number;
   prefix?: string;
   suffix?: string;
   className?: string;
-  format?: (n: number) => string;
 }
 
-function easeOut(t: number): number {
+function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
 }
 
 export default function CountUp({
-  from = 0,
+  from,
   to,
   duration = 1.2,
   delay = 0,
+  decimals = 0,
   prefix = "",
   suffix = "",
-  className = "",
-  format,
+  className,
 }: CountUpProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.5 });
-  const [value, setValue] = useState(from);
+  const prefersReduced = useReducedMotion();
+  const [value, setValue] = useState(prefersReduced ? to : from);
   const startedRef = useRef(false);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!inView || startedRef.current) return;
-    startedRef.current = true;
+    if (prefersReduced) return;
 
-    const startTime = performance.now() + delay * 1000;
-    let raf: number;
+    const timeout = setTimeout(() => {
+      if (startedRef.current) return;
+      startedRef.current = true;
+      const start = performance.now();
 
-    function update(now: number) {
-      if (now < startTime) {
-        raf = requestAnimationFrame(update);
-        return;
+      function tick(now: number) {
+        const elapsed = (now - start) / 1000;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutCubic(progress);
+        const current = from + (to - from) * eased;
+        setValue(current);
+
+        if (progress < 1) {
+          rafRef.current = requestAnimationFrame(tick);
+        }
       }
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / (duration * 1000), 1);
-      const eased = easeOut(progress);
-      setValue(Math.round(from + (to - from) * eased));
-      if (progress < 1) raf = requestAnimationFrame(update);
-    }
 
-    raf = requestAnimationFrame(update);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, from, to, duration, delay]);
+      rafRef.current = requestAnimationFrame(tick);
+    }, delay * 1000);
 
-  const display = format ? format(value) : value.toLocaleString();
+    return () => {
+      clearTimeout(timeout);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [from, to, duration, delay, prefersReduced]);
+
+  const display = decimals > 0 ? value.toFixed(decimals) : Math.round(value);
 
   return (
-    <span ref={ref} className={className}>
-      {prefix}{display}{suffix}
+    <span className={className}>
+      {prefix}
+      {display}
+      {suffix}
     </span>
   );
 }

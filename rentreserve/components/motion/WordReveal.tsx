@@ -1,49 +1,55 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 interface WordRevealProps {
   text: string;
   className?: string;
-  stagger?: number;
   delay?: number;
+  stagger?: number;
   duration?: number;
-  once?: boolean;
 }
 
 export default function WordReveal({
   text,
-  className = "",
-  stagger = 0.055,
+  className,
   delay = 0,
-  duration = 0.55,
-  once = true,
+  stagger = 0.055,
+  duration,
 }: WordRevealProps) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once, amount: 0.2 });
-
+  const prefersReduced = useReducedMotion();
   const words = text.split(" ");
 
+  const resolvedDuration = prefersReduced ? 0 : (duration ?? 0.55);
+  const resolvedStagger = prefersReduced ? 0 : stagger;
+
   return (
-    <span ref={ref} className={className} aria-label={text}>
+    <motion.span
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ staggerChildren: resolvedStagger, delayChildren: delay }}
+      className={className}
+      aria-label={text}
+    >
       {words.map((word, i) => (
         <motion.span
           key={i}
-          className="inline-block"
-          style={{ marginRight: "0.25em" }}
-          initial={{ opacity: 0, filter: "blur(8px)", y: 16 }}
-          animate={inView ? { opacity: 1, filter: "blur(0px)", y: 0 } : {}}
-          transition={{
-            duration,
-            delay: delay + i * stagger,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          className="inline-block mr-[0.25em]"
           aria-hidden="true"
+          variants={{
+            hidden: { opacity: 0, filter: "blur(8px)", y: 16 },
+            visible: {
+              opacity: 1,
+              filter: "blur(0px)",
+              y: 0,
+              transition: { duration: resolvedDuration, ease: [0.22, 1, 0.36, 1] },
+            },
+          }}
         >
           {word}
         </motion.span>
       ))}
-    </span>
+    </motion.span>
   );
 }
