@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  TENANT
+  LANDLORD
+  PROPERTY_MANAGER
+  ADMIN
+}
+
+enum Network {
+  TESTNET
+  MAINNET
+}
+
+enum ObligationStatus {
+  DRAFT
+  PENDING_ACCEPTANCE
+  ACTIVE
+  FUNDING
+  PARTIALLY_FUNDED
+  FULLY_FUNDED
+  READY_FOR_SETTLEMENT
+  SETTLING
+  SETTLED
+  CANCELLED
+  EXPIRED
+  DISPUTED
+}
+
+enum ContributionStatus {
+  PENDING
+  SUBMITTED
+  CONFIRMED
+  FAILED
+  REVERSED
+}
+
+enum SettlementStatus {
+  PENDING
+  SUBMITTED
+  CONFIRMED
+  FAILED
+}
+
+enum NotificationStatus {
+  SCHEDULED
+  PROCESSING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String?   @unique
+  phone         String?   @unique
+  passwordHash  String?
+  role          UserRole  @default(TENANT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  wallets           Wallet[]
+  tenantObligations RentObligation[] @relation("TenantObligations")
+  landlordObligations RentObligation[] @relation("LandlordObligations")
+  contributions     Contribution[]
+  notifications     Notification[]
+  batches           Batch[]
+  auditLogs         AuditLog[]
+}
+
+model Wallet {
+  id        String  @id @default(uuid())
+  userId    String
+  network   Network
+  address   String
+  isPrimary Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([network, address])
+}
+
+model Property {
+  id        String   @id @default(uuid())
+  ownerId   String
+  name      String
+  reference String?
+  city      String?
+  state     String?
+  country   String?  @default("Nigeria")
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  obligations RentObligation[]
+}
+
+model RentObligation {
+  id                String          @id @default(uuid())
+  chainObligationId String?         @unique
+  tenantId          String
+  landlordId        String
+  propertyId        String?
+  targetAmount      BigInt
+  currency          String          @default("NGN")
+  assetContract     String?
+  startDate         DateTime
+  dueDate           DateTime
+  fundedAmount      BigInt          @default(0)
+  status            ObligationStatus @default(DRAFT)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  tenant        User          @relation("TenantObligations", fields: [tenantId], references: [id])
+  landlord      User          @relation("LandlordObligations", fields: [landlordId], references: [id])
+  property      Property?     @relation(fields: [propertyId], references: [id])
+  contributions Contribution[]
+  settlement    Settlement?
+  batches       BatchItem[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+
+  @@index([tenantId])
+  @@index([landlordId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model Contribution {
+  id              String              @id @default(uuid())
+  obligationId    String
+  contributorId   String
+  amount          BigInt
+  asset           String
+  network         Network
+  transactionHash String?
+  ledger          BigInt?
+  status          ContributionStatus  @default(PENDING)
+  createdAt       DateTime            @default(now())
+  confirmedAt     DateTime?
+
+  obligation RentObligation @relation(fields: [obligationId], references: [id])
+  contributor User          @relation(fields: [contributorId], references: [id])
+
+  @@index([obligationId])
+  @@index([contributorId])
+  @@index([status])
+}
+
+model Settlement {
+  id              String           @id @default(uuid())
+  obligationId    String           @unique
+  amount          BigInt
+  asset           String
+  transactionHash String?
+  status          SettlementStatus @default(PENDING)
+  initiatedAt     DateTime         @default(now())
+  submittedAt     DateTime?
+  confirmedAt     DateTime?
+
+  obligation RentObligation @relation(fields: [obligationId], references: [id])
+}
+
+model Batch {
+  id           String   @id @default(uuid())
+  initiatorId  String
+  totalAmount  BigInt
+  currency     String   @default("NGN")
+  asset        String?
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+
+  initiator User        @relation(fields: [initiatorId], references: [id])
+  items     BatchItem[]
+}
+
+model BatchItem {
+  id           String @id @default(uuid())
+  batchId      String
+  obligationId String
+  amount       BigInt
+
+  batch      Batch          @relation(fields: [batchId], references: [id])
+  obligation RentObligation @relation(fields: [obligationId], references: [id])
+
+  @@unique([batchId, obligationId])
+}
+
+model Notification {
+  id           String             @id @default(uuid())
+  userId       String
+  type         String
+  title        String
+  body         String
+  scheduledFor DateTime
+  sentAt       DateTime?
+  status       NotificationStatus @default(SCHEDULED)
+  channel      NotificationChannel @default(IN_APP)
+  referenceId  String?
+  createdAt    DateTime           @default(now())
+
+  user       User            @relation(fields: [userId], references: [id])
+  obligation RentObligation? @relation(fields: [referenceId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([scheduledFor])
+}
+
+model ContractEvent {
+  id           String   @id @default(uuid())
+  eventType    String
+  obligationId String?
+  contractId   String
+  ledger       BigInt
+  transactionHash String
+  data         Json
+  processedAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  @@index([eventType])
+  @@index([obligationId])
+  @@index([ledger])
+  @@unique([transactionHash, eventType])
+}
+
+model IndexerCursor {
+  id          String @id @default(uuid())
+  name        String @unique
+  lastLedger  BigInt
+  lastEventId String?
+  updatedAt   DateTime @updatedAt
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String
+  action     String
+  entityType String
+  entityId   String
+  oldState   String?
+  newState   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  user        User            @relation(fields: [actorId], references: [id])
+  obligation  RentObligation? @relation(fields: [entityId], references: [id])
+
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
