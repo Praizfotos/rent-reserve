@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link";
+import LogoMark from "@/components/shared/LogoMark";
+
 const footerLinks = [
   {
     heading: "Product",
@@ -39,17 +42,6 @@ const footerLinks = [
   },
 ];
 
-function LogoMark() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-      <rect width="22" height="22" rx="6" fill="rgba(0,0,0,0.875)" />
-      <rect x="6" y="5" width="2" height="12" rx="1" fill="white" />
-      <path d="M8 5h4a3 3 0 0 1 0 6H8" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-      <path d="M10 11l4 6" stroke="white" strokeWidth="2" strokeLinecap="round" fill="none" />
-    </svg>
-  );
-}
-
 export default function Footer() {
   return (
     <footer
@@ -61,7 +53,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
           {/* Brand */}
           <div className="md:col-span-4">
-            <a href="/" className="flex items-center gap-2 mb-4" aria-label="RentReserve home">
+            <Link href="/" className="flex items-center gap-2 mb-4" aria-label="RentReserve home">
               <LogoMark />
               <span
                 className="text-[14px] font-semibold tracking-tight"
@@ -69,7 +61,7 @@ export default function Footer() {
               >
                 RentReserve
               </span>
-            </a>
+            </Link>
             <p
               className="text-[13px] leading-relaxed mb-5"
               style={{ color: "rgba(0,0,0,0.45)", maxWidth: 280 }}

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import LogoMark from "@/components/shared/LogoMark";
 
 const navLinks = [
   { label: "Product", href: "#product" },
@@ -42,7 +44,7 @@ export default function Navbar() {
             aria-label="Main navigation"
           >
             {/* Logo */}
-            <a
+            <Link
               href="/"
               className="flex items-center gap-2 shrink-0"
               aria-label="RentReserve home"
@@ -54,7 +56,7 @@ export default function Navbar() {
               >
                 RentReserve
               </span>
-            </a>
+            </Link>
 
             {/* Desktop nav */}
             <ul className="hidden md:flex items-center gap-6" role="list">
@@ -81,36 +83,20 @@ export default function Navbar() {
 
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-3">
-              <a
-                href="#login"
-                className="text-[14px] transition-colors duration-150 px-3 py-2"
+              <Link
+                href="/app/dashboard"
+                className="text-[14px] transition-colors duration-150 px-3 py-2 hover:text-black/87 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
                 style={{ color: "rgba(0,0,0,0.608)" }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLAnchorElement).style.color =
-                    "rgba(0,0,0,0.875)")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLAnchorElement).style.color =
-                    "rgba(0,0,0,0.608)")
-                }
               >
                 Log in
-              </a>
-              <a
-                href="#start"
-                className="text-[14px] font-medium text-white rounded-full px-4 py-2 transition-colors duration-150"
+              </Link>
+              <Link
+                href="/app/dashboard"
+                className="text-[14px] font-medium text-white rounded-full px-4 py-2 transition-all duration-150 hover:bg-black hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
                 style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLAnchorElement).style.backgroundColor =
-                    "#000")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLAnchorElement).style.backgroundColor =
-                    "rgba(0,0,0,0.875)")
-                }
               >
                 Start preparing
-              </a>
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -182,57 +168,27 @@ export default function Navbar() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.25, duration: 0.25 }}
               >
-                <a
-                  href="#login"
-                  className="text-[16px] text-center py-3 rounded-xl border border-black/10"
+                <Link
+                  href="/app/dashboard"
+                  className="text-[16px] text-center py-3 rounded-xl border border-black/10 hover:bg-black/[0.02] transition-colors"
                   style={{ color: "rgba(0,0,0,0.608)" }}
                   onClick={() => setMenuOpen(false)}
                 >
                   Log in
-                </a>
-                <a
-                  href="#start"
-                  className="text-[16px] font-medium text-white text-center py-3 rounded-xl"
+                </Link>
+                <Link
+                  href="/app/dashboard"
+                  className="text-[16px] font-medium text-white text-center py-3 rounded-xl transition-all duration-150 hover:bg-black"
                   style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
                   onClick={() => setMenuOpen(false)}
                 >
                   Start preparing
-                </a>
+                </Link>
               </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
-  );
-}
-
-function LogoMark() {
-  return (
-    <svg
-      width="22"
-      height="22"
-      viewBox="0 0 22 22"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect width="22" height="22" rx="6" fill="rgba(0,0,0,0.875)" />
-      {/* R mark */}
-      <rect x="6" y="5" width="2" height="12" rx="1" fill="white" />
-      <path
-        d="M8 5h4a3 3 0 0 1 0 6H8"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <path
-        d="M10 11l4 6"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-      />
-    </svg>
   );
 }

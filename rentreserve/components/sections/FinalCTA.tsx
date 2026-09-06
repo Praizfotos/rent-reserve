@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
+import Link from "next/link";
 import { useRef } from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -72,34 +73,20 @@ export default function FinalCTA() {
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.3, ease }}
           >
-            <a
-              href="#"
-              className="inline-flex items-center gap-1.5 text-[14px] font-medium text-white rounded-full px-6 py-3 transition-all duration-150"
+            <Link
+              href="/app/dashboard"
+              className="inline-flex items-center gap-1.5 text-[14px] font-medium text-white rounded-full px-6 py-3 transition-all duration-150 hover:bg-black hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
               style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "#000";
-                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.backgroundColor = "rgba(0,0,0,0.875)";
-                (e.currentTarget as HTMLAnchorElement).style.transform = "translateY(0)";
-              }}
             >
-              Start a Rent Reserve
+              Open the app
               <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
                 <path d="M2 6.5h9M7 2.5l4.5 4L7 10.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </a>
+            </Link>
             <a
               href="#product"
-              className="text-[14px] px-4 py-3 transition-colors duration-150"
+              className="text-[14px] px-4 py-3 transition-colors duration-150 hover:text-black/87 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
               style={{ color: "rgba(0,0,0,0.45)" }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.875)")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLAnchorElement).style.color = "rgba(0,0,0,0.45)")
-              }
             >
               Explore the product
             </a>

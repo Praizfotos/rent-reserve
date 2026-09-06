@@ -179,12 +179,6 @@ export default function SecuritySection() {
                 >
                   {step.sub}
                 </p>
-                {i < valueLoop.length - 1 && (
-                  <div
-                    className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block"
-                    aria-hidden="true"
-                  />
-                )}
               </motion.div>
             ))}
           </div>
@@ -221,7 +215,7 @@ export default function SecuritySection() {
               className="text-[15px] leading-relaxed"
               style={{ color: "rgba(0,0,0,0.55)" }}
             >
-              No fabricated certifications. No vague "military grade" claims.
+              No fabricated certifications. No vague &quot;military grade&quot; claims.
               Three principles that actually govern how the product is designed.
             </p>
           </BlurReveal>

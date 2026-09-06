@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import BlurReveal from "@/components/motion/BlurReveal";
 
@@ -196,8 +196,9 @@ function StepCard({
 }
 
 export default function LifecycleSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.1 });
+  const flowRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(flowRef, { once: true, amount: 0.1 });
 
   return (
     <section
@@ -240,7 +241,7 @@ export default function LifecycleSection() {
         {/* Flow arrow */}
         <motion.div
           className="flex items-center gap-2 mb-8 overflow-x-auto pb-2"
-          ref={ref}
+          ref={flowRef}
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.4, delay: 0.05 }}
@@ -275,7 +276,7 @@ export default function LifecycleSection() {
         {/* Cards grid */}
         <div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          ref={ref}
+          ref={gridRef}
         >
           {lifecycleSteps.map((step, i) => (
             <StepCard key={step.id} step={step} index={i} inView={inView} />

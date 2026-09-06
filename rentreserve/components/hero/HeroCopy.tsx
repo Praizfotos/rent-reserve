@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import WordReveal from "@/components/motion/WordReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -59,38 +60,18 @@ export default function HeroCopy() {
         animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
         transition={{ duration: 0.6, delay: 0.64, ease }}
       >
-        <a
-          href="#start"
-          className="inline-flex items-center gap-1.5 text-[14px] font-medium text-white rounded-full px-5 py-2.5 transition-all duration-150"
+        <Link
+          href="/app/dashboard"
+          className="group inline-flex items-center gap-1.5 text-[14px] font-medium text-white rounded-full px-5 py-2.5 transition-all duration-150 hover:bg-black hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
           style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              "#000";
-            (e.currentTarget as HTMLAnchorElement).style.transform =
-              "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-              "rgba(0,0,0,0.875)";
-            (e.currentTarget as HTMLAnchorElement).style.transform =
-              "translateY(0)";
-          }}
         >
-          Start a Rent Reserve
+          Open the app
           <ArrowRight />
-        </a>
+        </Link>
         <a
           href="#how-it-works"
-          className="inline-flex items-center text-[14px] px-4 py-2.5 transition-all duration-150"
+          className="inline-flex items-center text-[14px] px-4 py-2.5 transition-colors duration-150 hover:text-black/87 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
           style={{ color: "rgba(0,0,0,0.608)" }}
-          onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLAnchorElement).style.color =
-              "rgba(0,0,0,0.875)")
-          }
-          onMouseLeave={(e) =>
-            ((e.currentTarget as HTMLAnchorElement).style.color =
-              "rgba(0,0,0,0.608)")
-          }
         >
           See how it works
         </a>
