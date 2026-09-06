@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-serif: "Georgia", "Times New Roman", serif;
+
+    /* Canvas */
+    --color-canvas: 255 255 255;
+    --color-canvas-subtle: 252 252 252;
+    --color-canvas-muted: 248 248 248;
+    --color-canvas-footer: 247 247 247;
+
+    /* Text */
+    --color-text-primary: rgba(0, 0, 0, 0.875);
+    --color-text-secondary: rgba(0, 0, 0, 0.608);
+    --color-text-muted: rgba(0, 0, 0, 0.45);
+
+    /* Hairlines */
+    --color-hairline: rgba(0, 0, 0, 0.06);
+    --color-hairline-strong: rgba(0, 0, 0, 0.10);
+
+    /* Semantic */
+    --color-positive: rgba(0, 143, 74, 0.81);
+    --color-negative: rgba(223, 38, 0, 0.82);
+
+    /* Surface shadow */
+    --shadow-hairline: rgba(0,0,0,0) 0px 0px 0px 0.5px inset, rgba(0,0,0,0.06) 0px 0px 0px 0.5px;
+    --shadow-hairline-strong: rgba(0,0,0,0.08) 0px 0px 0px 0.5px inset;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: rgb(var(--color-canvas));
+    color: var(--color-text-primary);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* Focus */
+  :focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.35);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-muted {
+    color: var(--color-text-muted);
+  }
+
+  .surface-hairline {
+    box-shadow: var(--shadow-hairline);
+  }
+
+  .surface-hairline-strong {
+    box-shadow: var(--shadow-hairline-strong);
+  }
+
+  .bg-canvas {
+    background-color: rgb(var(--color-canvas));
+  }
+
+  .bg-canvas-subtle {
+    background-color: rgb(var(--color-canvas-subtle));
+  }
+
+  .bg-canvas-muted {
+    background-color: rgb(var(--color-canvas-muted));
+  }
+
+  .bg-canvas-footer {
+    background-color: rgb(var(--color-canvas-footer));
+  }
+
+  .hairline-b {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .hairline-t {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .positive {
+    color: var(--color-positive);
+  }
+
+  .negative {
+    color: var(--color-negative);
+  }
+}
