@@ -2,67 +2,171 @@
 
 > **Prepare for rent before rent day.**
 
-RentReserve is a programmable rent-obligation platform designed around a simple financial reality:
+RentReserve is a programmable rent-obligation platform built on Stellar/Soroban for Nigeria's annual rent market.
 
-> **Income arrives gradually. Rent often doesn't.**
-
-Instead of treating annual rent as a last-minute payment event, RentReserve turns it into a preparation process. A tenant can define a future rent obligation, receive a target and deadline, fund the obligation gradually, monitor progress, receive deadline-aware reminders, and eventually settle the obligation through an authorized Stellar transaction.
-
-The platform is designed for the Nigerian rental market and uses **Stellar and Soroban** as the programmable settlement and verification layer.
-
-This repository contains the complete RentReserve implementation, including:
-
-* A premium editorial landing page
-* Rent-obligation lifecycle logic
-* Soroban smart contract infrastructure
-* TypeScript SDK
-* REST API
-* PostgreSQL persistence
-* Stellar event indexing
-* Notification scheduling
-* Shared TypeScript types
-* Interactive product visualizations
-* Responsive UI
-* Accessibility and reduced-motion support
-
-The project is intentionally designed so that **blockchain infrastructure supports the product experience rather than becoming the product experience**.
+Annual rent creates a large, predictable financial obligation. RentReserve lets users define that obligation and prepare for it gradually — with Stellar/Soroban providing the programmable settlement layer.
 
 ---
 
-# Screenshots
+## Screenshots
 
-### Landing Page
-![Landing Page Hero](screenshots/01-landing-hero.png)
+| Landing Page | Dashboard | Obligations |
+|---|---|---|
+| ![Landing](screenshots/01-landing-hero.png) | ![Dashboard](screenshots/03-dashboard.png) | ![Obligations](screenshots/04-obligations.png) |
 
-### Full Landing Page
-![Full Landing Page](screenshots/02-landing-full.png)
+| Detail + Simulator | Timeline | Settings |
+|---|---|---|
+| ![Detail](screenshots/05-obligation-detail.png) | ![Timeline](screenshots/06-timeline.png) | ![Settings](screenshots/07-settings.png) |
 
-### Dashboard — Rent Readiness
-![Dashboard](screenshots/03-dashboard.png)
-
-### Obligations
-![Obligations](screenshots/04-obligations.png)
-
-### Obligation Detail + Contribution Simulator
-![Obligation Detail](screenshots/05-obligation-detail.png)
-
-### Timeline
-![Timeline](screenshots/06-timeline.png)
-
-### Settings — Wallet & Settlement
-![Settings](screenshots/07-settings.png)
-
-### Mobile — Landing Page
-![Mobile Landing](screenshots/08-mobile-landing.png)
-
-### Mobile — Dashboard
-![Mobile Dashboard](screenshots/09-mobile-dashboard.png)
+| Mobile Landing | Mobile Dashboard |
+|---|---|
+| ![Mobile Landing](screenshots/08-mobile-landing.png) | ![Mobile Dashboard](screenshots/09-mobile-dashboard.png) |
 
 ---
 
-# Table of Contents
+## Why Stellar?
 
-* [Screenshots](#screenshots)
+Stellar/Soroban provides the programmable infrastructure for rent obligations:
+
+- **Smart contract** — defines obligation state, authorized contributions, and settlement rules
+- **Wallet authorization** — users sign transactions, no custodial key management
+- **Verifiable settlement** — every settlement produces an on-chain transaction record
+- **Low fees** — suitable for micro-contributions toward rent
+
+The contract manages the full lifecycle: create → accept → contribute → settle → verify.
+
+---
+
+## What is implemented?
+
+| Layer | Status |
+|---|---|
+| Soroban smart contract | **Implemented** — full lifecycle, 24 tests passing |
+| TypeScript SDK | **Implemented** — client abstraction for contract interactions |
+| REST API | **Implemented** — Express + Prisma, obligation routes |
+| Event indexer | **Implemented** — Stellar Horizon polling with cursor persistence |
+| Notification engine | **Implemented** — 7-tier reminder scheduling |
+| PostgreSQL schema | **Implemented** — 14 models via Prisma |
+| Landing page | **Implemented** — 17-section editorial experience |
+| Application UI | **Implemented** — dashboard, obligations, timeline, settings |
+| Product visualizations | **Implemented** — rent readiness, contribution simulator |
+
+---
+
+## What is simulated?
+
+- **Wallet connection** — currently uses mock data; Freighter SDK integration planned
+- **Settlement transactions** — UI shows Stellar transaction hashes but does not submit real transactions yet
+- **Contribution funding** — the simulator demonstrates the calculation; actual funding requires wallet integration
+- **Notifications** — the scheduling engine exists but is not connected to a production email/SMS provider
+
+The smart contract is fully implemented and tested on Soroban testnet. The frontend demonstrates the intended product experience with realistic mock data.
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 18+
+- Rust + Cargo
+- PostgreSQL
+- Stellar/Soroban CLI
+
+### Setup
+
+```bash
+git clone https://github.com/florence2peter/rent-reserve.git
+cd rent-reserve
+npm install
+```
+
+### Run the landing page
+
+```bash
+cd rentreserve
+npm run dev
+# http://localhost:3000
+```
+
+### Run the smart contract tests
+
+```bash
+cd packages/contracts
+cargo test
+```
+
+### Run the API
+
+```bash
+cd apps/api
+cp .env.example .env
+# Configure DATABASE_URL in .env
+npx prisma migrate dev
+npm run dev
+# http://localhost:3001
+```
+
+---
+
+## Repository structure
+
+```text
+rent-reserve/
+├── packages/
+│   ├── contracts/          # Soroban smart contract (Rust)
+│   │   ├── src/lib.rs      # Contract implementation
+│   │   └── src/tests.rs    # 24 contract tests
+│   ├── sdk/                # TypeScript SDK
+│   └── types/              # Shared TypeScript types
+├── apps/
+│   └── api/                # Express API + Prisma + notifications
+├── rentreserve/            # Next.js 16 landing page + app routes
+│   ├── app/                # Routes (/, /app/dashboard, /app/obligations, ...)
+│   ├── components/         # Sections, motion, product-ui, shared
+│   └── lib/                # Tokens, hooks, mock data
+├── docs/                   # Architecture documentation
+├── screenshots/            # Product screenshots
+└── scripts/                # Deployment scripts
+```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+
+### Good first issues
+
+We maintain a backlog of contributor-sized work on GitHub Issues. These are scoped for independent implementation during Wave sprint cycles:
+
+| Issue | Complexity | Points |
+|---|---|---|
+| [#1](https://github.com/florence2peter/rent-reserve/issues/1) — Soroban contract test suite | High | 200 |
+| [#2](https://github.com/florence2peter/rent-reserve/issues/2) — CI/CD pipeline | Medium | 150 |
+| [#3](https://github.com/florence2peter/rent-reserve/issues/3) — Stellar wallet connection (Freighter) | High | 200 |
+| [#4](https://github.com/florence2peter/rent-reserve/issues/4) — Email templates for reminders | Medium | 150 |
+| [#5](https://github.com/florence2peter/rent-reserve/issues/5) — API rate limiting & validation | Medium | 150 |
+| [#6](https://github.com/florence2peter/rent-reserve/issues/6) — Interactive architecture diagram | Medium | 150 |
+| [#7](https://github.com/florence2peter/rent-reserve/issues/7) — Mobile responsive audit | Trivial | 100 |
+| [#8](https://github.com/florence2peter/rent-reserve/issues/8) — WCAG 2.1 AA accessibility | Medium | 150 |
+| [#9](https://github.com/florence2peter/rent-reserve/issues/9) — Horizon SSE streaming indexer | High | 200 |
+| [#10](https://github.com/florence2peter/rent-reserve/issues/10) — Landing page simulator section | Medium | 150 |
+
+Each issue includes: description, context, step-by-step implementation, example commit message, and acceptance criteria.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+---
+
+## Detailed documentation
+
+The sections below provide comprehensive technical reference for the full implementation.
+
 * [Product Vision](#product-vision)
 * [The Problem](#the-problem)
 * [The RentReserve Model](#the-rentreserve-model)
@@ -72,54 +176,17 @@ The project is intentionally designed so that **blockchain infrastructure suppor
 * [Architecture](#architecture)
 * [System Boundaries](#system-boundaries)
 * [Technology Stack](#technology-stack)
-* [Repository Structure](#repository-structure)
-* [Landing Page](#landing-page)
-* [Landing Page Design System](#landing-page-design-system)
-* [Typography](#typography)
-* [Color System](#color-system)
-* [Spacing System](#spacing-system)
-* [Layout System](#layout-system)
-* [Responsive Design](#responsive-design)
-* [Navigation](#navigation)
-* [Hero](#hero)
-* [Product Storytelling Sections](#product-storytelling-sections)
-* [Product Visualizations](#product-visualizations)
-* [Motion System](#motion-system)
-* [Motion Principles](#motion-principles)
-* [Interactive Components](#interactive-components)
-* [Accessibility](#accessibility)
-* [Performance](#performance)
-* [SEO](#seo)
+* [Repository Structure](#repository-structure-1)
 * [Smart Contract](#smart-contract)
-* [Contract Lifecycle](#contract-lifecycle)
-* [Contract Methods](#contract-methods)
-* [Contract Events](#contract-events)
-* [Contract State](#contract-state)
-* [Smart Contract Security](#smart-contract-security)
 * [API Backend](#api-backend)
-* [API Endpoints](#api-endpoints)
-* [Event Indexer](#event-indexer)
-* [Notification Engine](#notification-engine)
 * [SDK](#sdk)
 * [Database](#database)
-* [Data Model](#data-model)
-* [Frontend / Backend Boundary](#frontend--backend-boundary)
-* [Blockchain / Backend Boundary](#blockchain--backend-boundary)
-* [Environment Variables](#environment-variables)
 * [Local Development](#local-development)
-* [Development Workflow](#development-workflow)
 * [Testing](#testing)
 * [Deployment](#deployment)
 * [Security](#security)
-* [Regulatory Considerations](#regulatory-considerations)
 * [Known Limitations](#known-limitations)
-* [Known Unknowns](#known-unknowns)
 * [Future Roadmap](#future-roadmap)
-* [Implementation Order](#implementation-order)
-* [Quality Assurance](#quality-assurance)
-* [Definition of Done](#definition-of-done)
-* [Contributing](#contributing)
-* [License](#license)
 
 ---
 
@@ -2418,8 +2485,8 @@ Install:
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-org/rentreserve.git
-cd rentreserve
+git clone https://github.com/florence2peter/rent-reserve.git
+cd rent-reserve
 ```
 
 Install dependencies:
