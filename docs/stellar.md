@@ -15,8 +15,12 @@ The contract is implemented in `packages/contracts/src/lib.rs` (407 lines).
 ### Contract address
 
 ```
-Testnet: <deployed after stellar contract deploy>
+Testnet: CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI
 ```
+
+Network: Stellar Testnet
+
+Explorer: [Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI) | [Stellar Lab](https://lab.stellar.org/r/testnet/contract/CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI)
 
 ### Obligation lifecycle
 
@@ -71,7 +75,7 @@ import { RentReserveClient } from '@rent-reserve/sdk';
 
 const client = new RentReserveClient({
   rpcUrl: 'https://soroban-testnet.stellar.org',
-  contractId: '<contract-id>',
+  contractId: 'CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI',
 });
 
 // Create an obligation
@@ -83,9 +87,65 @@ await client.createObligation({
 });
 ```
 
+## Why Soroban is meaningful to RentReserve
+
+RentReserve is not using Stellar merely as a payment rail.
+
+The rent obligation itself has programmable state.
+
+A Soroban contract can enforce:
+
+1. Who created the obligation
+2. Who must accept it
+3. Who is authorized to contribute
+4. How much can be contributed
+5. When the obligation expires
+6. When it becomes fully funded
+7. When settlement is permitted
+8. When cancellation is permitted
+9. How the obligation's state changes over time
+
+This makes the rent obligation independently verifiable rather than relying entirely on the application's database to determine whether an obligation was funded or settled correctly.
+
+## On-chain vs application layer
+
+### On-chain — Soroban
+
+The Soroban contract is responsible for:
+
+- Rent obligation state
+- Participant authorization
+- Contribution validation
+- Funding limits
+- Settlement eligibility
+- Cancellation rules
+- State transitions
+- Contract-level invariants
+
+### Off-chain — Application
+
+The API and PostgreSQL layer are responsible for:
+
+- User accounts
+- Property metadata
+- Dashboard aggregation
+- Contribution planning
+- Readiness calculations
+- Notification scheduling
+- Indexed event storage
+- Application-level history
+
+### Current integration boundary
+
+The Soroban contract is implemented, tested, and deployed to Stellar Testnet.
+
+The current frontend uses realistic mock wallet and settlement flows while Freighter wallet authorization and production transaction submission are being completed.
+
 ## Event indexer
 
-The API includes a Stellar Horizon event indexer (`apps/api/src/stellar/indexer.ts`) that:
+The event indexer is implemented and designed to synchronize on-chain contract events into PostgreSQL. It is ready for use with the deployed Soroban contract.
+
+The indexer (`apps/api/src/stellar/indexer.ts`):
 
 - Polls Horizon for contract events
 - Maintains a cursor for resume-on-restart
@@ -115,9 +175,10 @@ stellar contract build
 
 ```bash
 stellar contract deploy \
-  --wasm target/wasm32-unknown-unknown/release/rent_reserve.wasm \
+  --wasm target/wasm32v1-none/release/rent_reserve.wasm \
   --rpc-url https://soroban-testnet.stellar.org \
-  --network-passphrase "Test SDF Network ; September 2015"
+  --network-passphrase "Test SDF Network ; September 2015" \
+  --source <deployer-key>
 ```
 
 ### Environment variables
@@ -125,15 +186,15 @@ stellar contract deploy \
 ```env
 STELLAR_RPC_URL=https://soroban-testnet.stellar.org
 STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
-SOROBAN_CONTRACT_ID=<deployed-contract-id>
+SOROBAN_CONTRACT_ID=CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI
 ```
 
 ## Current status
 
-- **Smart contract**: Implemented and tested (24 tests passing)
+- **Smart contract**: Implemented, tested (24 tests), deployed to [Stellar Testnet](https://stellar.expert/explorer/testnet/contract/CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI)
 - **SDK**: Implemented, typechecks clean
-- **Event indexer**: Implemented with Horizon polling
+- **Event indexer**: Implemented and ready for use with the deployed contract
 - **Wallet connection**: Mock data (Freighter integration planned)
 - **Settlement transactions**: UI shows hashes but does not submit real transactions yet
 
-The smart contract is the most mature Stellar component. The frontend demonstrates the intended experience with realistic mock data while wallet and settlement integration are completed.
+The smart contract is the most mature Stellar component — it is deployed and verifiable on-chain. The frontend demonstrates the intended experience with realistic mock data while wallet and settlement integration are completed.

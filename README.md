@@ -41,7 +41,7 @@ The contract manages the full lifecycle: create → accept → contribute → se
 
 | Layer | Status |
 |---|---|
-| Soroban smart contract | **Implemented** — full lifecycle, 24 tests passing |
+| Soroban smart contract | **Implemented** — full lifecycle, 24 tests passing, [deployed to testnet](https://stellar.expert/explorer/testnet/contract/CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI) |
 | TypeScript SDK | **Implemented** — client abstraction for contract interactions |
 | REST API | **Implemented** — Express + Prisma, obligation routes |
 | Event indexer | **Implemented** — Stellar Horizon polling with cursor persistence |
@@ -60,7 +60,7 @@ The contract manages the full lifecycle: create → accept → contribute → se
 - **Contribution funding** — the simulator demonstrates the calculation; actual funding requires wallet integration
 - **Notifications** — the scheduling engine exists but is not connected to a production email/SMS provider
 
-The smart contract is fully implemented and tested on Soroban testnet. The frontend demonstrates the intended product experience with realistic mock data.
+The smart contract is fully implemented, tested, and deployed to Stellar Testnet. The frontend demonstrates the intended product experience with realistic mock data while wallet and settlement integration are completed.
 
 ---
 
@@ -2447,9 +2447,9 @@ Example:
 
 ```env
 DATABASE_URL=
-STELLAR_RPC_URL=
-STELLAR_NETWORK_PASSPHRASE=
-SOROBAN_CONTRACT_ID=
+STELLAR_RPC_URL=https://soroban-testnet.stellar.org
+STELLAR_NETWORK_PASSPHRASE=Test SDF Network ; September 2015
+SOROBAN_CONTRACT_ID=CDCIUAVJWNXRR6BTULG4SWFQQQTKAGUYTHMCUDDWTYRNH46YBGPFFWMI
 API_PORT=
 ```
 
