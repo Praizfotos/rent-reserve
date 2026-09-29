@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import LogoMark from "@/components/shared/LogoMark";
 
 const sidebarLinks = [
@@ -54,6 +55,11 @@ const sidebarLinks = [
 export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session } = useSession();
+
+  const handleSignOut = () => {
+    signOut({ callbackUrl: "/" });
+  };
 
   return (
     <div className="flex min-h-screen bg-[rgb(248,248,248)] overflow-x-hidden">
@@ -93,13 +99,42 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             })}
           </ul>
         </nav>
-        <div className="px-5 py-4 border-t border-black/[0.04]">
-          <Link
-            href="/"
-            className="text-[12px] text-black/40 hover:text-black/60 transition-colors duration-150"
-          >
-            ← Back to site
-          </Link>
+        <div className="px-5 py-4 border-t border-black/[0.04] space-y-3">
+          {/* User Info */}
+          {session?.user && (
+            <div className="flex items-center gap-2 mb-3">
+              {session.user.image && (
+                <img
+                  src={session.user.image}
+                  alt={session.user.name || "User"}
+                  className="h-6 w-6 rounded-full"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-medium text-black/70 truncate">
+                  {session.user.name}
+                </p>
+                <p className="text-[10px] text-black/40 truncate">
+                  {session.user.email}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex items-center justify-between">
+            <Link
+              href="/"
+              className="text-[12px] text-black/40 hover:text-black/60 transition-colors duration-150"
+            >
+              ← Back to site
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="text-[11px] text-black/40 hover:text-black/60 transition-colors duration-150 px-2 py-1 rounded hover:bg-black/[0.02]"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -153,7 +188,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             </span>
           </Link>
         </div>
-        <nav className="px-3 py-4" aria-label="Application navigation">
+        <nav className="px-3 py-4 flex-1 overflow-y-auto pb-24" aria-label="Application navigation">
           <ul className="space-y-1" role="list">
             {sidebarLinks.map((link) => {
               const isActive = pathname === link.href;
@@ -176,6 +211,49 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             })}
           </ul>
         </nav>
+        
+        {/* Mobile Sidebar Footer */}
+        <div className="px-3 py-4 border-t border-black/[0.04] space-y-3 absolute bottom-0 left-0 right-0 bg-white">
+          {/* User Info */}
+          {session?.user && (
+            <div className="flex items-center gap-2 px-2">
+              {session.user.image && (
+                <img
+                  src={session.user.image}
+                  alt={session.user.name || "User"}
+                  className="h-6 w-6 rounded-full flex-shrink-0"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-medium text-black/70 truncate">
+                  {session.user.name}
+                </p>
+                <p className="text-[10px] text-black/40 truncate">
+                  {session.user.email}
+                </p>
+              </div>
+            </div>
+          )}
+          
+          <div className="flex items-center justify-between px-2">
+            <button
+              onClick={() => {
+                setMobileOpen(false);
+                handleSignOut();
+              }}
+              className="text-[11px] text-black/40 hover:text-black/60 transition-colors duration-150 px-2 py-1 rounded hover:bg-black/[0.02]"
+            >
+              Sign out
+            </button>
+            <Link
+              href="/"
+              className="text-[12px] text-black/40 hover:text-black/60 transition-colors duration-150"
+              onClick={() => setMobileOpen(false)}
+            >
+              Back to site →
+            </Link>
+          </div>
+        </div>
       </aside>
 
       {/* Main content */}

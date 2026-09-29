@@ -84,14 +84,14 @@ export default function Navbar() {
             {/* Desktop actions */}
             <div className="hidden md:flex items-center gap-3">
               <Link
-                href="/app/dashboard"
+                href="/auth/signin"
                 className="text-[14px] transition-colors duration-150 px-3 py-2 hover:text-black/87 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
                 style={{ color: "rgba(0,0,0,0.608)" }}
               >
                 Log in
               </Link>
               <Link
-                href="/app/dashboard"
+                href="/auth/signin"
                 className="text-[14px] font-medium text-white rounded-full px-4 py-2 transition-all duration-150 hover:bg-black hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black/35"
                 style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
               >
@@ -169,7 +169,7 @@ export default function Navbar() {
                 transition={{ delay: 0.25, duration: 0.25 }}
               >
                 <Link
-                  href="/app/dashboard"
+                  href="/auth/signin"
                   className="text-[16px] text-center py-3 rounded-xl border border-black/10 hover:bg-black/[0.02] transition-colors"
                   style={{ color: "rgba(0,0,0,0.608)" }}
                   onClick={() => setMenuOpen(false)}
@@ -177,7 +177,7 @@ export default function Navbar() {
                   Log in
                 </Link>
                 <Link
-                  href="/app/dashboard"
+                  href="/auth/signin"
                   className="text-[16px] font-medium text-white text-center py-3 rounded-xl transition-all duration-150 hover:bg-black"
                   style={{ backgroundColor: "rgba(0,0,0,0.875)" }}
                   onClick={() => setMenuOpen(false)}

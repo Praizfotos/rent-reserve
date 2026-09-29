@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Providers from "@/components/providers/Providers";
 
 export const metadata: Metadata = {
   title: "RentReserve — Prepare for Rent Before Rent Day",
@@ -39,7 +40,9 @@ export default function RootLayout({
         >
           Skip to content
         </a>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
