@@ -8,14 +8,14 @@ export default function SettingsPage() {
   const prefersReduced = useReducedMotion();
 
   return (
-    <div className="p-6 md:p-8 lg:p-10 max-w-[800px] mx-auto">
+    <div className="p-4 md:p-6 lg:p-8 xl:p-10 max-w-[800px] mx-auto overflow-x-hidden">
       <motion.div
         initial={prefersReduced ? false : { opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        className="mb-8"
+        className="mb-6 md:mb-8"
       >
-        <h1 className="text-[22px] font-semibold tracking-tight text-black/87">
+        <h1 className="text-[20px] md:text-[22px] font-semibold tracking-tight text-black/87">
           Settings
         </h1>
         <p className="mt-1 text-[14px] text-black/45">
@@ -23,13 +23,13 @@ export default function SettingsPage() {
         </p>
       </motion.div>
 
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Wallet */}
         <motion.div
           initial={prefersReduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-xl border border-black/[0.06] bg-white p-5"
+          className="rounded-xl border border-black/[0.06] bg-white p-4 md:p-5"
         >
           <h2 className="text-[14px] font-semibold text-black/87 mb-4">Wallet</h2>
           {MOCK_WALLET.connected ? (
@@ -43,14 +43,16 @@ export default function SettingsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-medium text-black/87">{MOCK_WALLET.network}</p>
-                  <p className="text-[11px] text-black/35 font-mono truncate">{MOCK_WALLET.address}</p>
+                  <p className="text-[11px] text-black/35 font-mono truncate break-all">{MOCK_WALLET.address}</p>
                 </div>
-                <StatusBadge variant="positive">Connected</StatusBadge>
+                <div className="flex-shrink-0">
+                  <StatusBadge variant="positive">Connected</StatusBadge>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-lg border border-black/[0.04] p-3">
                   <p className="text-[11px] text-black/35">Balance</p>
-                  <p className="text-[14px] font-semibold text-black/87 mt-0.5 tabular-nums">{formatNaira(MOCK_WALLET.balance)}</p>
+                  <p className="text-[14px] font-semibold text-black/87 mt-0.5 tabular-nums break-all">{formatNaira(MOCK_WALLET.balance)}</p>
                 </div>
                 <div className="rounded-lg border border-black/[0.04] p-3">
                   <p className="text-[11px] text-black/35">Network</p>
@@ -87,7 +89,7 @@ export default function SettingsPage() {
           initial={prefersReduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-xl border border-black/[0.06] bg-white p-5"
+          className="rounded-xl border border-black/[0.06] bg-white p-4 md:p-5"
         >
           <h2 className="text-[14px] font-semibold text-black/87 mb-4">Settlement history</h2>
           {MOCK_SETTLEMENTS.length === 0 ? (
@@ -95,16 +97,18 @@ export default function SettingsPage() {
           ) : (
             <div className="space-y-3">
               {MOCK_SETTLEMENTS.map((s) => (
-                <div key={s.id} className="rounded-lg border border-black/[0.04] p-3">
-                  <div className="flex items-center justify-between mb-2">
-                    <p className="text-[13px] font-medium text-black/87">{formatNaira(s.amount)}</p>
-                    <StatusBadge variant="positive">{s.status === "confirmed" ? "Confirmed" : "Simulated"}</StatusBadge>
+                <div key={s.id} className="rounded-lg border border-black/[0.04] p-3 overflow-hidden">
+                  <div className="flex items-center justify-between mb-2 gap-2">
+                    <p className="text-[13px] font-medium text-black/87 break-all">{formatNaira(s.amount)}</p>
+                    <div className="flex-shrink-0">
+                      <StatusBadge variant="positive">{s.status === "confirmed" ? "Confirmed" : "Simulated"}</StatusBadge>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] text-black/40">
-                    <span>Network: {s.network}</span>
-                    <span className="text-right font-mono">{s.txHash.slice(0, 10)}…</span>
-                    <span>From: {s.from}</span>
-                    <span>To: {s.to}</span>
+                  <div className="space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0 text-[11px] text-black/40">
+                    <div className="truncate">Network: {s.network}</div>
+                    <div className="text-left sm:text-right font-mono truncate">{s.txHash.slice(0, 10)}…</div>
+                    <div className="truncate">From: {s.from}</div>
+                    <div className="truncate">To: {s.to}</div>
                   </div>
                   <p className="text-[10px] text-black/25 mt-2">{s.timestampLabel}</p>
                 </div>
@@ -118,19 +122,19 @@ export default function SettingsPage() {
           initial={prefersReduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-xl border border-black/[0.06] bg-white p-5"
+          className="rounded-xl border border-black/[0.06] bg-white p-4 md:p-5"
         >
           <h2 className="text-[14px] font-semibold text-black/87 mb-4">Profile</h2>
           <div className="space-y-3">
             <div>
               <label className="text-[12px] font-medium text-black/45 block mb-1">Name</label>
-              <div className="rounded-lg border border-black/[0.06] bg-black/[0.02] px-3 py-2 text-[14px] text-black/70">
+              <div className="rounded-lg border border-black/[0.06] bg-black/[0.02] px-3 py-2 text-[14px] text-black/70 break-all">
                 Praise Francis
               </div>
             </div>
             <div>
               <label className="text-[12px] font-medium text-black/45 block mb-1">Email</label>
-              <div className="rounded-lg border border-black/[0.06] bg-black/[0.02] px-3 py-2 text-[14px] text-black/70">
+              <div className="rounded-lg border border-black/[0.06] bg-black/[0.02] px-3 py-2 text-[14px] text-black/70 break-all">
                 praise@example.com
               </div>
             </div>
@@ -142,7 +146,7 @@ export default function SettingsPage() {
           initial={prefersReduced ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-xl border border-black/[0.06] bg-white p-5"
+          className="rounded-xl border border-black/[0.06] bg-white p-4 md:p-5"
         >
           <h2 className="text-[14px] font-semibold text-black/87 mb-4">Notifications</h2>
           <div className="space-y-0">
@@ -152,13 +156,13 @@ export default function SettingsPage() {
               { label: "Settlement updates", description: "Know when your obligation is fully reserved", enabled: true },
               { label: "Weekly progress summary", description: "A weekly summary of your reservation progress", enabled: false },
             ].map((item) => (
-              <div key={item.label} className="flex items-center justify-between py-3 border-b border-black/[0.04] last:border-0">
-                <div>
-                  <p className="text-[13px] font-medium text-black/87">{item.label}</p>
-                  <p className="text-[12px] text-black/40 mt-0.5">{item.description}</p>
+              <div key={item.label} className="flex items-center justify-between py-3 border-b border-black/[0.04] last:border-0 gap-4">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-medium text-black/87 break-words">{item.label}</p>
+                  <p className="text-[12px] text-black/40 mt-0.5 break-words">{item.description}</p>
                 </div>
                 <div
-                  className={`relative h-5 w-9 rounded-full transition-colors duration-200 cursor-pointer flex-shrink-0 ml-4 ${
+                  className={`relative h-5 w-9 rounded-full transition-colors duration-200 cursor-pointer flex-shrink-0 ${
                     item.enabled ? "bg-[rgba(0,143,74,0.81)]" : "bg-black/15"
                   }`}
                   role="switch"

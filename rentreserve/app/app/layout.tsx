@@ -56,7 +56,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-[rgb(248,248,248)]">
+    <div className="flex min-h-screen bg-[rgb(248,248,248)] overflow-x-hidden">
       {/* Sidebar - desktop */}
       <aside className="hidden lg:flex lg:w-60 lg:flex-col lg:fixed lg:inset-y-0 border-r border-black/[0.06] bg-white">
         <div className="flex h-14 items-center gap-2 px-5 border-b border-black/[0.04]">
@@ -99,15 +99,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile header */}
       <div className="lg:hidden fixed top-0 inset-x-0 z-40 flex h-14 items-center justify-between border-b border-black/[0.06] bg-white px-4">
-        <div className="flex items-center gap-2">
-          <LogoMark className="h-5 w-5" />
-          <span className="text-[14px] font-semibold tracking-tight text-black/87">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <LogoMark className="h-5 w-5 flex-shrink-0" />
+          <span className="text-[14px] font-semibold tracking-tight text-black/87 truncate">
             RentReserve
           </span>
         </div>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-black/[0.04] transition-colors"
+          className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-black/[0.04] transition-colors flex-shrink-0"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
           aria-expanded={mobileOpen}
         >
@@ -162,7 +162,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <main id="main-content" className="flex-1 lg:pl-60 pt-14 lg:pt-0">
+      <main id="main-content" className="flex-1 lg:pl-60 pt-14 lg:pt-0 overflow-x-hidden min-w-0">
         {children}
       </main>
     </div>
