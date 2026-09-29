@@ -1,20 +1,30 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useAuth } from "@/components/providers/MockAuth";
 import LogoMark from "@/components/shared/LogoMark";
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
+  const { signIn, user } = useAuth();
+  const router = useRouter();
+
+  // Redirect if already signed in
+  useEffect(() => {
+    if (user) {
+      router.push('/app/dashboard');
+    }
+  }, [user, router]);
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      await signIn("google", { 
-        callbackUrl: "/app/dashboard",
-        redirect: true 
-      });
+      await signIn("google");
+      // Set auth cookie for middleware
+      document.cookie = "rentreserve_authenticated=true; path=/; max-age=86400"; // 24 hours
+      router.push('/app/dashboard');
     } catch (error) {
       console.error("Sign in error:", error);
       setIsLoading(false);
@@ -47,6 +57,21 @@ export default function SignIn() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-sm border border-black/[0.06] sm:rounded-xl sm:px-10">
+          {/* Demo Notice */}
+          <div className="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start gap-2">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-blue-600 mt-0.5 flex-shrink-0">
+                <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 3a1 1 0 011 1v3a1 1 0 01-2 0V5a1 1 0 011-1zm0 8a1 1 0 100-2 1 1 0 000 2z" fill="currentColor"/>
+              </svg>
+              <div>
+                <p className="text-[12px] font-medium text-blue-800">Demo Mode</p>
+                <p className="text-[11px] text-blue-600 mt-0.5">
+                  This is a demonstration. No real authentication required.
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Google Sign In Button */}
           <button
             onClick={handleGoogleSignIn}
@@ -76,7 +101,7 @@ export default function SignIn() {
               </svg>
             )}
             <span className="text-[14px] font-medium text-black/87">
-              {isLoading ? "Signing in..." : "Continue with Google"}
+              {isLoading ? "Signing in..." : "Continue with Google (Demo)"}
             </span>
           </button>
 
@@ -88,7 +113,7 @@ export default function SignIn() {
               </div>
               <div className="relative flex justify-center text-[12px]">
                 <span className="px-2 bg-white text-black/40">
-                  Secure authentication
+                  Demonstration only
                 </span>
               </div>
             </div>
@@ -97,8 +122,8 @@ export default function SignIn() {
           {/* Info */}
           <div className="mt-6 text-center">
             <p className="text-[12px] text-black/35 leading-relaxed">
-              By signing in, you agree to our terms of service and privacy policy. 
-              Your Google account will only be used for authentication.
+              This is a demonstration of the RentReserve authentication flow. 
+              No real Google account is required - just click the button above.
             </p>
           </div>
         </div>

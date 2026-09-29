@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useAuth } from "@/components/providers/MockAuth";
 import LogoMark from "@/components/shared/LogoMark";
 
 const sidebarLinks = [
@@ -54,11 +54,15 @@ const sidebarLinks = [
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { data: session } = useSession();
+  const { user, signOut } = useAuth();
 
   const handleSignOut = () => {
-    signOut({ callbackUrl: "/" });
+    signOut();
+    // Remove auth cookie
+    document.cookie = "rentreserve_authenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    router.push("/");
   };
 
   return (
@@ -101,21 +105,21 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </nav>
         <div className="px-5 py-4 border-t border-black/[0.04] space-y-3">
           {/* User Info */}
-          {session?.user && (
+          {user && (
             <div className="flex items-center gap-2 mb-3">
-              {session.user.image && (
+              {user.image && (
                 <img
-                  src={session.user.image}
-                  alt={session.user.name || "User"}
+                  src={user.image}
+                  alt={user.name || "User"}
                   className="h-6 w-6 rounded-full"
                 />
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-medium text-black/70 truncate">
-                  {session.user.name}
+                  {user.name}
                 </p>
                 <p className="text-[10px] text-black/40 truncate">
-                  {session.user.email}
+                  {user.email}
                 </p>
               </div>
             </div>
@@ -215,21 +219,21 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         {/* Mobile Sidebar Footer */}
         <div className="px-3 py-4 border-t border-black/[0.04] space-y-3 absolute bottom-0 left-0 right-0 bg-white">
           {/* User Info */}
-          {session?.user && (
+          {user && (
             <div className="flex items-center gap-2 px-2">
-              {session.user.image && (
+              {user.image && (
                 <img
-                  src={session.user.image}
-                  alt={session.user.name || "User"}
+                  src={user.image}
+                  alt={user.name || "User"}
                   className="h-6 w-6 rounded-full flex-shrink-0"
                 />
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-[11px] font-medium text-black/70 truncate">
-                  {session.user.name}
+                  {user.name}
                 </p>
                 <p className="text-[10px] text-black/40 truncate">
-                  {session.user.email}
+                  {user.email}
                 </p>
               </div>
             </div>
